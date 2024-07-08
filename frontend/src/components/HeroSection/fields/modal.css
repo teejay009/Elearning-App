@@ -1,0 +1,69 @@
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1500; /* Ensure modal is above other content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  color: black;
+  border-radius: 8px;
+  max-width: 80%; /* Limit width of modal content */
+  max-height: 80%; /* Limit height of modal content */
+  overflow-y: auto; /* Enable vertical scrolling */
+  z-index: 1600; /* Ensure modal content is above modal background */
+}
+
+.modal-content p {
+  margin-bottom: 10px;
+}
+
+.modal-content ul {
+  padding-left: 20px;
+  list-style: none;
+}
+
+.modal-content li {
+  margin-bottom: 5px;
+}
+
+.modal-content button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Stripe specific styling to ensure proper z-index */
+.StripeCheckout {
+  z-index: 1700 !important;
+}

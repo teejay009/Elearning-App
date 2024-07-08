@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
+    "@stripe/react-stripe-js": "^2.7.3",
+    "@stripe/stripe-js": "^4.1.0",
+    "firebase": "^10.11.1",
+    "react-stripe-checkout": "^2.6.3",
+    "react-toastify": "^10.0.5"
+  }
+}
