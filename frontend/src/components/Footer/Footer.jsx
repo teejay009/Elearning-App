@@ -50,6 +50,6 @@ const Footer = () => {
     </>
   );
 }
-23
+
 
 export default Footer;
