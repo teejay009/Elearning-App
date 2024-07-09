@@ -17,7 +17,7 @@ const Footer = () => {
         </Container>
       </Box>
 
-      <footer backgroundColor="#1d2636" color="#" py={20}>
+      <footer backgroundColor="#1d2636" color="#f" py={20}>
         <Container maxW="container.lg" display="grid" gridTemplateColumns={{ base: "1fr", md: "6fr 2fr 2fr 1fr" }} gridGap={6}>
           <Box>
             <Box className='logo'>
