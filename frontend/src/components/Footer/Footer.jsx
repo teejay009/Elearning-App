@@ -47,7 +47,7 @@ const Footer = () => {
       <Box className='legal' textAlign="center" py={4} background="#1d2636" color="rgba(255, 255, 255, 0.5)" borderTop="1px solid rgba(255, 255, 255, 0.1)">
         <Text>© 2024 E-Learn. Designed By TJLearn.</Text>
       </Box>
-    </>
+    </> 78
   );
 }
 
