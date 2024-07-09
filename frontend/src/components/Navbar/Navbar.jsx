@@ -14,7 +14,7 @@ const lists = [
   { tag: "Features", path: "/features" },
   { tag: "Benefit", path: "/benefit" },
   { tag: "Courses", path: "/courses" },
-  { tag: "Board", path: "/board", dropdown: ["Discover", "Rewards"]},
+  { tag: "Board", path: "/board", dropdown: ["Discover"]},
 ];
 
 // GreetUser component for displaying user greeting

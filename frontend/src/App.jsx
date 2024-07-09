@@ -12,7 +12,6 @@ import HeroSection from "./components/HeroSection/HeroSection"
 import AboutUs from './components/Navbar/AboutUs/AboutUs';
 import Dashboard from './components/Boards/Dashboard/Dashboard';
 import Discover from './components/Boards/Discover/Discover';
-import Rewards from './components/Boards/Rewards/Rewards';
 import Login from './pages/Auth/Login';
 import Contact from './components/Navbar/Contact/Contact';
 import { Navigate } from 'react-router-dom';
@@ -55,7 +54,6 @@ const App = () => {
         <Route path="/aboutUs" element={<ProtectedRoute><AboutUs /></ProtectedRoute>} />
         <Route path="/board/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
         <Route path="/board/discover" element={<ProtectedRoute><Discover /></ProtectedRoute>} />
-        <Route path="/board/rewards" element={<ProtectedRoute><Rewards /></ProtectedRoute>} />
         <Route path='/arbitrum' element={<Arbitrum/>}/>
         <Route path='/lisk' element={<Lisk/>}/> 
         <Route path='/celo' element={<CeloAfrica/>}/>
