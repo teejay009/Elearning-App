@@ -33,14 +33,14 @@ const Footer = () => {
           </Box>
 
           {footer.map((val, index) => (
-            <Bo key={index}>
+            <Box key={index}>
               <Text as="h3" fontWeight="500" marginBottom="30px">{val.title}</Text>
               <ul>
                 {val.text.map((items, idx) => (
                   <li key={idx}>{items.list}</li>
                 ))}
               </ul>
-            </Bo>
+            </Box>
           ))}
         </Container>
       </footer>
