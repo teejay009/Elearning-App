@@ -4,8 +4,9 @@ import Dashboard from "../../Boards/Dashboard/Dashboard";
 import WithdrawalModal from "../../Withdrawal/WithdrawalModal";
 import stripePromise from "../../Withdrawal/stripe";
 import { Elements } from "@stripe/react-stripe-js";
-import "./modal.css"; // Import modal CSS file
-import { Box, Button, Heading, Text, Flex } from "@chakra-ui/react";
+import { Box, Button, Heading, Text, Flex, IconButton } from "@chakra-ui/react";
+import { CloseIcon } from "@chakra-ui/icons";
+import "./modal.css";
 import ArbitrumLogo from "../../../assets/arbitrum-logo.jpeg";
 import arbitrum from "../../../assets/Arbitrum.png";
 
@@ -15,11 +16,10 @@ const CeloAfrica = () => {
   const [showResultModal, setShowResultModal] = useState(false);
   const [quizResult, setQuizResult] = useState({});
   const [paymentError, setPaymentError] = useState(null);
-
+  const [earnPointsClicked, setEarnPointsClicked] = useState(false);
   const [totalScore, setTotalScore] = useState(() => {
     return parseInt(localStorage.getItem("totalScoreCeloAfrica")) || 0;
   });
-
   const [totalQuestionsAnswered, setTotalQuestionsAnswered] = useState(0);
 
   const currentRead = "Celo Africa";
@@ -29,34 +29,67 @@ const CeloAfrica = () => {
     localStorage.setItem("totalScoreCeloAfrica", totalScore.toString());
   }, [totalScore]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  const handleEarnPointsClick = () => {
+    setEarnPointsClicked(true);
+    setTimeout(() => {
       setShowModal(true);
-    }, 10000); // 10 seconds in milliseconds
+    }, 5000);
+  };
 
-    return () => clearTimeout(timer);
-  }, []); // Run only once on component mount
+  const handleAnswerChange = (questionIndex, selectedOptionIndex) => {
+    setUserAnswers({
+      ...userAnswers,
+      [questionIndex]: selectedOptionIndex,
+    });
+  };
 
-  useEffect(() => {
-    const handleClickOutsideModal = (event) => {
-      if (
-        (showModal || showResultModal) &&
-        !event.target.closest(".modal-content")
-      ) {
-        setShowModal(false);
-        setShowResultModal(false);
+  const handleSubmit = () => {
+    const result = {};
+    let score = 0;
+    let answeredCount = 0;
+
+    QuizData.forEach((questionData, index) => {
+      const userAnswer = userAnswers[index];
+      result[index] = userAnswer === questionData.answer;
+
+      if (result[index]) {
+        score += 15;
+        answeredCount++;
       }
-    };
+    });
 
-    window.addEventListener("click", handleClickOutsideModal);
+    const existingTotalScore =
+      parseInt(localStorage.getItem("totalScoreCeloAfrica")) || 0;
 
-    return () => {
-      window.removeEventListener("click", handleClickOutsideModal);
-    };
-  }, [showModal, showResultModal]);
+    const newTotalScore = existingTotalScore + score;
+
+    localStorage.setItem("totalScoreCeloAfrica", newTotalScore.toString());
+
+    setTotalScore(newTotalScore);
+    setTotalQuestionsAnswered(answeredCount);
+    setQuizResult(result);
+    setShowResultModal(true);
+  };
+
+  const handleRefresh = () => {
+    if (earnPointsClicked) {
+      setShowModal(true);
+    } else {
+      window.location.reload();
+    }
+  };
+
+  const handleWithdraw = (amount) => {
+    setTotalScore(totalScore - amount);
+    localStorage.setItem("totalScoreCeloAfrica", (totalScore - amount).toString());
+  };
+
+  const handleCancelModal = () => {
+    setShowModal(false);
+    setUserAnswers({});
+  };
 
   const QuizData = [
-    // Quiz questions and answers data
     {
       question: "What is the primary focus of the Celo blockchain platform?",
       options: [
@@ -98,8 +131,7 @@ const CeloAfrica = () => {
       answer: 1,
     },
     {
-      question:
-        "What is the function of the Valora wallet in the Celo ecosystem?",
+      question: "What is the function of the Valora wallet in the Celo ecosystem?",
       options: [
         "To exchange cryptocurrencies",
         "To store private keys",
@@ -159,59 +191,6 @@ const CeloAfrica = () => {
       answer: 1,
     },
   ];
-
-  const handleAnswerChange = (questionIndex, selectedOptionIndex) => {
-    setUserAnswers({
-      ...userAnswers,
-      [questionIndex]: selectedOptionIndex,
-    });
-  };
-
-  const handleSubmit = () => {
-    // Logic to evaluate user's answers
-    const result = {};
-    let score = 0;
-    let answeredCount = 0; // Count the number of questions answered
-
-    QuizData.forEach((questionData, index) => {
-      const userAnswer = userAnswers[index];
-      result[index] = userAnswer === questionData.answer;
-
-      if (result[index]) {
-        score += 15; // 5 points for each correct answer
-        answeredCount++; // Increment answered count
-      }
-    });
-
-    const existingTotalScore =
-      parseInt(localStorage.getItem("totalScoreCeloAfrica")) || 0;
-
-    const newTotalScore = existingTotalScore + score;
-
-    localStorage.setItem("totalScoreCeloAfrica", newTotalScore.toString());
-
-    setTotalScore(newTotalScore);
-    setTotalQuestionsAnswered(answeredCount);
-    setQuizResult(result);
-    setShowResultModal(true);
-  };
-
-  const handleRefresh = () => {
-    window.location.reload(); // Refresh the page
-  };
-
-  const handleDeleteTotalPoints = () => {
-    localStorage.removeItem("totalScoreCeloAfrica");
-    setTotalScore(0);
-    setTotalQuestionsAnswered(0);
-    setQuizResult({});
-    setShowResultModal(false);
-  };
-
-  const handleWithdraw = (amount) => {
-    setTotalScore(totalScore - amount);
-    localStorage.setItem("totalScoreCeloAfrica", (totalScore - amount).toString());
-  };
 
   return (
     <Box
@@ -284,27 +263,24 @@ const CeloAfrica = () => {
             colorScheme="blue"
             marginTop="5rem"
             marginRight="25rem"
-            onClick={handleRefresh}
+            onClick={handleEarnPointsClick}
           >
             Earn more points
           </Button>
-          <Button
-            className="btn"
-            padding="1.5rem"
-            colorScheme="red"
-            marginTop="2rem"
-            marginRight="25rem"
-            onClick={handleDeleteTotalPoints}
-          >
-            Delete Total Points
-          </Button>
+          
         </Flex>
       </Flex>
 
       {showModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>{currentRead}</h2>
+            <IconButton
+              icon={<CloseIcon />}
+              aria-label="Close modal"
+              onClick={handleCancelModal}
+              className="modal-close-btn"
+            />
+            <h2>{currentRead} Quiz</h2>
             {QuizData.map((questionData, questionIndex) => (
               <div key={questionIndex}>
                 <p>
@@ -329,7 +305,7 @@ const CeloAfrica = () => {
                 </ul>
               </div>
             ))}
-            <button onClick={handleSubmit}>Submit</button>
+            <Button onClick={handleSubmit}>Submit</Button>
           </div>
         </div>
       )}
@@ -337,6 +313,12 @@ const CeloAfrica = () => {
       {showResultModal && (
         <div className="modal">
           <div className="modal-content">
+            <IconButton
+              icon={<CloseIcon />}
+              aria-label="Close modal"
+              onClick={() => setShowResultModal(false)}
+              className="modal-close-btn"
+            />
             <h2>Results</h2>
             <div>
               <p>Total Result: {totalScore}</p>
@@ -352,7 +334,6 @@ const CeloAfrica = () => {
                 >
                   {quizResult[questionIndex] ? "Correct ✅" : "Incorrect ❌"}
                 </p>
-                <button>Check Point</button>
               </div>
             ))}
           </div>

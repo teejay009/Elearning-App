@@ -4,8 +4,8 @@ import Dashboard from "../../Boards/Dashboard/Dashboard";
 import WithdrawalModal from "../../Withdrawal/WithdrawalModal";
 import stripePromise from "../../Withdrawal/stripe";
 import { Elements } from "@stripe/react-stripe-js";
-import "./modal.css"; // Import modal CSS file
-import { Box, Button, Heading, Text, Flex } from "@chakra-ui/react";
+import { Box, Button, Heading, Text, Flex, IconButton } from "@chakra-ui/react";
+import { CloseIcon } from "@chakra-ui/icons"; // Import close icon from Chakra UI
 import ArbitrumLogo from "../../../assets/arbitrum-logo.jpeg";
 import arbitrum from "../../../assets/Arbitrum.png";
 import StripeCheckout from "react-stripe-checkout";
@@ -22,6 +22,7 @@ const Arbitrum = () => {
   });
 
   const [totalQuestionsAnswered, setTotalQuestionsAnswered] = useState(0);
+  const [earnPointsClicked, setEarnPointsClicked] = useState(false); // State to track if "Earn more points" button clicked
 
   const currentRead = "Arbitrum";
   const navigate = useNavigate();
@@ -30,31 +31,74 @@ const Arbitrum = () => {
     localStorage.setItem("totalScoreArbitrum", totalScore.toString());
   }, [totalScore]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowModal(true);
-    }, 10000); // 10 seconds in milliseconds
+  const handleEarnPointsClick = () => {
+    setEarnPointsClicked(true); // Set state to true when "Earn more points" clicked
+    setTimeout(() => {
+      setShowModal(true); // Show modal after 5 seconds
+    }, 1000);
+  };
 
-    return () => clearTimeout(timer);
-  }, []); // Run only once on component mount
+  const handleAnswerChange = (questionIndex, selectedOptionIndex) => {
+    setUserAnswers({
+      ...userAnswers,
+      [questionIndex]: selectedOptionIndex,
+    });
+  };
 
-  useEffect(() => {
-    const handleClickOutsideModal = (event) => {
-      if (
-        (showModal || showResultModal) &&
-        !event.target.closest(".modal-content")
-      ) {
-        setShowModal(false);
-        setShowResultModal(false);
+  const handleSubmit = () => {
+    // Logic to evaluate user's answers
+    const result = {};
+    let score = 0;
+    let answeredCount = 0; // Count the number of questions answered
+
+    QuizData.forEach((questionData, index) => {
+      const userAnswer = userAnswers[index];
+      result[index] = userAnswer === questionData.answer;
+
+      if (result[index]) {
+        score += 15; // 5 points for each correct answer
+        answeredCount++; // Increment answered count
       }
-    };
+    });
 
-    window.addEventListener("click", handleClickOutsideModal);
+    const existingTotalScore =
+      parseInt(localStorage.getItem("totalScoreArbitrum")) || 0;
 
-    return () => {
-      window.removeEventListener("click", handleClickOutsideModal);
-    };
-  }, [showModal, showResultModal]);
+    const newTotalScore = existingTotalScore + score;
+
+    localStorage.setItem("totalScoreArbitrum", newTotalScore.toString());
+
+    setTotalScore(newTotalScore);
+    setTotalQuestionsAnswered(answeredCount);
+    setQuizResult(result);
+    setShowResultModal(true);
+  };
+
+  const handleRefresh = () => {
+    if (earnPointsClicked) {
+      setShowModal(true);
+    } else {
+      window.location.reload(); // Refresh the page
+    }
+  };
+
+  const handleDeleteTotalPoints = () => {
+    localStorage.removeItem("totalScoreArbitrum");
+    setTotalScore(0);
+    setTotalQuestionsAnswered(0);
+    setQuizResult({});
+    setShowResultModal(false);
+  };
+
+  const handleWithdraw = (amount) => {
+    setTotalScore(totalScore - amount);
+    localStorage.setItem("totalScoreArbitrum", (totalScore - amount).toString());
+  };
+
+  const handleCancelModal = () => {
+    setShowModal(false);
+    setUserAnswers({}); // Clear user's answers when modal is canceled
+  };
 
   const QuizData = [
     // Quiz questions and answers data
@@ -150,59 +194,6 @@ const Arbitrum = () => {
     }
   ];
 
-  const handleAnswerChange = (questionIndex, selectedOptionIndex) => {
-    setUserAnswers({
-      ...userAnswers,
-      [questionIndex]: selectedOptionIndex,
-    });
-  };
-
-  const handleSubmit = () => {
-    // Logic to evaluate user's answers
-    const result = {};
-    let score = 0;
-    let answeredCount = 0; // Count the number of questions answered
-
-    QuizData.forEach((questionData, index) => {
-      const userAnswer = userAnswers[index];
-      result[index] = userAnswer === questionData.answer;
-
-      if (result[index]) {
-        score += 15; // 5 points for each correct answer
-        answeredCount++; // Increment answered count
-      }
-    });
-
-    const existingTotalScore =
-      parseInt(localStorage.getItem("totalScoreArbitrum")) || 0;
-
-    const newTotalScore = existingTotalScore + score;
-
-    localStorage.setItem("totalScoreArbitrum", newTotalScore.toString());
-
-    setTotalScore(newTotalScore);
-    setTotalQuestionsAnswered(answeredCount);
-    setQuizResult(result);
-    setShowResultModal(true);
-  };
-
-  const handleRefresh = () => {
-    window.location.reload(); // Refresh the page
-  };
-
-  const handleDeleteTotalPoints = () => {
-    localStorage.removeItem("totalScoreArbitrum");
-    setTotalScore(0);
-    setTotalQuestionsAnswered(0);
-    setQuizResult({});
-    setShowResultModal(false);
-  };
-
-  const handleWithdraw = (amount) => {
-    setTotalScore(totalScore - amount);
-    localStorage.setItem("totalScoreArbitrum", (totalScore - amount).toString());
-  };
-
   return (
     <Box
       as="header"
@@ -274,26 +265,26 @@ const Arbitrum = () => {
             colorScheme="blue"
             marginTop="5rem"
             marginRight="25rem"
-            onClick={handleRefresh}
+            onClick={handleEarnPointsClick}
           >
             Earn more points
           </Button>
-          <Button
-            className="btn"
-            padding="1.5rem"
-            colorScheme="red"
-            marginTop="2rem"
-            marginRight="25rem"
-            onClick={handleDeleteTotalPoints}
-          >
-            Delete Total Points
-          </Button>
+         
         </Flex>
       </Flex>
 
       {showModal && (
         <div className="modal">
           <div className="modal-content">
+            <IconButton
+              icon={<CloseIcon />}
+              aria-label="Close modal"
+              onClick={handleCancelModal}
+              marginTop="1rem"
+              marginLeft="35rem"
+              zIndex="1"
+              backgroundColor="transparent"
+            />
             <h2>{currentRead}</h2>
             {QuizData.map((questionData, questionIndex) => (
               <div key={questionIndex}>
@@ -327,6 +318,15 @@ const Arbitrum = () => {
       {showResultModal && (
         <div className="modal">
           <div className="modal-content">
+            <IconButton
+              icon={<CloseIcon />}
+              aria-label="Close modal"
+              onClick={() => setShowResultModal(false)}
+              marginTop="1rem"
+              marginLeft="35rem"
+              zIndex="1"
+              backgroundColor="transparent"
+            />
             <h2>Results</h2>
             <div>
               <p>Total Result: {totalScore}</p>
@@ -351,7 +351,6 @@ const Arbitrum = () => {
 
       <Elements stripe={stripePromise}>
         <WithdrawalModal totalPoints={totalScore} onWithdraw={handleWithdraw} />
-
       </Elements>
 
       <Dashboard totalPoints={totalScore} />

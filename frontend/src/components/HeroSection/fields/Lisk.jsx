@@ -4,11 +4,9 @@ import Dashboard from "../../Boards/Dashboard/Dashboard";
 import WithdrawalModal from "../../Withdrawal/WithdrawalModal";
 import stripePromise from "../../Withdrawal/stripe";
 import { Elements } from "@stripe/react-stripe-js";
-import "./modal.css"; // Import modal CSS file
-import { Box, Button, Heading, Text, Flex } from "@chakra-ui/react";
+import { Box, Button, Heading, Text, Flex, CloseButton } from "@chakra-ui/react";
 import ArbitrumLogo from "../../../assets/arbitrum-logo.jpeg";
 import arbitrum from "../../../assets/Ethereum.png";
-import StripeCheckout from "react-stripe-checkout";
 
 const Lisk = () => {
   const [showModal, setShowModal] = useState(false);
@@ -25,12 +23,6 @@ const Lisk = () => {
   useEffect(() => {
     localStorage.setItem("totalScoreLisk", totalScore.toString());
   }, [totalScore]);
-
-  // Function to handle payment success
-  const handleToken = (token) => {
-    console.log(token); // Log token details for testing, replace with actual handling logic
-    alert(`Payment Successful! Token: ${token.id}`);
-  };
 
   const [totalQuestionsAnswered, setTotalQuestionsAnswered] = useState(0);
 
@@ -207,14 +199,6 @@ const Lisk = () => {
     window.location.reload(); // Refresh the page
   };
 
-  const handleDeleteTotalPoints = () => {
-    localStorage.removeItem("totalScoreLisk");
-    setTotalScore(0);
-    setTotalQuestionsAnswered(0);
-    setQuizResult({});
-    setShowResultModal(false);
-  };
-
   const handleWithdraw = (amount) => {
     const newTotalScore = totalScore - amount;
     setTotalScore(newTotalScore);
@@ -264,29 +248,25 @@ const Lisk = () => {
           </Heading>
 
           <Text fontSize="1.2rem" marginRight="2rem" lineHeight="50px">
-            Ethereum is a decentralized blockchain platform that enables
-            developers to build and deploy smart contracts and decentralized
-            applications (DApps). It was proposed by Vitalik Buterin in late
-            2013 and development began in early 2014, with the network going
-            live on July 30, 2015.Unlike Bitcoin, which primarily serves as a
-            peer-to-peer electronic cash system, Ethereum aims to provide a more
-            versatile platform for executing programmable, self-executing
-            contracts. These smart contracts are written in Solidity, Ethereum's
-            programming language, nd can be used to automate a wide range of
-            processes, from financial transactions to supply chain management
-            and decentralized finance (DeFi) applications.One of the key
-            features of Ethereum is its ability to support decentralized
-            applications, or DApps, which run on its blockchain network. DApps
-            can be built for various purposes, such as decentralized finance
-            (DeFi), non-fungible tokens (NFTs), gaming, social networks, and
-            more. Ethereum also introduced the concept of the Ethereum Virtual
-            Machine (EVM), a decentralized Turing-complete virtual machine that
-            executes smart contracts on the Ethereum network. This allows
-            developers to write code that runs on the blockchain, ensuring
-            transparency, immutability, and security. Overall, Ethereum has
-            become one of the most popular and widely used blockchain platforms,
-            driving innovation in the blockchain and cryptocurrency space and
-            paving the way for a new decentralized internet infrastructure.
+            Lisk is a blockchain application platform that enables developers
+            to build, publish, distribute, and monetize decentralized
+            applications (dApps) on their blockchain network. Launched in early
+            2016 by Max Kordek and Oliver Beddows, Lisk aims to make blockchain
+            technology more accessible by providing developers with a
+            user-friendly ecosystem and tools to deploy custom blockchains and
+            sidechains. One of the key features of Lisk is its use of
+            sidechains, which are independent blockchains linked to the main
+            Lisk blockchain. This architecture allows developers to create
+            scalable and customizable blockchain applications without affecting
+            the performance of the main network. Developers can use JavaScript,
+            one of the most widely used programming languages, to build dApps on
+            the Lisk platform. This lowers the entry barrier for developers who
+            are already familiar with JavaScript and want to explore blockchain
+            technology. Lisk also provides a Software Development Kit (SDK) and
+            comprehensive documentation to help developers get started with
+            building decentralized applications. Overall, Lisk aims to foster
+            innovation in the blockchain space by empowering developers to
+            create and deploy blockchain applications easily and efficiently.
           </Text>
           <Button
             className="btn"
@@ -294,19 +274,9 @@ const Lisk = () => {
             colorScheme="blue"
             marginTop="5rem"
             marginRight="25rem"
-            onClick={handleRefresh}
+            onClick={() => setShowModal(true)}
           >
             Earn more points
-          </Button>
-          <Button
-            className="btn"
-            padding="1.5rem"
-            colorScheme="red"
-            marginTop="2rem"
-            marginRight="25rem"
-            onClick={handleDeleteTotalPoints}
-          >
-            Delete Total Points
           </Button>
         </Flex>
       </Flex>
@@ -314,6 +284,12 @@ const Lisk = () => {
       {showModal && (
         <div className="modal">
           <div className="modal-content">
+            <CloseButton
+              position="absolute"
+              right="1rem"
+              top="1rem"
+              onClick={() => setShowModal(false)} // Close modal when cancel button is clicked
+            />
             <h2>{currentRead}</h2>
             {QuizData.map((questionData, questionIndex) => (
               <div key={questionIndex}>
@@ -347,6 +323,12 @@ const Lisk = () => {
       {showResultModal && (
         <div className="modal">
           <div className="modal-content">
+            <CloseButton
+              position="absolute"
+              right="1rem"
+              top="1rem"
+              onClick={() => setShowResultModal(false)} // Close modal when cancel button is clicked
+            />
             <h2>Results</h2>
             <div>
               <p>Total Result: {totalScore}</p>
