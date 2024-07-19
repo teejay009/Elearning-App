@@ -13,8 +13,9 @@ import {
 } from "@chakra-ui/react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { toast, ToastContainer } from 'react-toastify';
+// import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
 
 const stripePromise = loadStripe("pk_test_51PWJ9W2NbWt1P2RMuZu9eOH45TauiKrDuVOJj47pRnXMMjC5fcnVnLdIAPlp76mkMAWsIRcmh9fC9Vyyi1g75VVt00o2UnvYwl");
 
