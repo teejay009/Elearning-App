@@ -276,7 +276,7 @@ const Lisk = () => {
             marginRight="25rem"
             onClick={() => setShowModal(true)}
           >
-            Earn more points
+          Start Quiz
           </Button>
         </Flex>
       </Flex>

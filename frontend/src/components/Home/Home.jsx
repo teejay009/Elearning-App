@@ -31,10 +31,7 @@ const Home = () => {
         <h2 style={{ fontSize: "3rem"}}>Welcome To</h2> 
         <h1 className="fw-semibold" style={{ fontSize: "3rem" }}>Tee-Jay <StyledSpan>ELEARNING</StyledSpan></h1> 
         <Text fontSize="xl" mt={4}>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
-          fugit? Doloremque deserunt ipsum eaque, <br/> dolor tempore, minima nisi
-          debitis, et quas voluptatibus nam ex. Necessitatibus eligendi ratione
-          expedita! Porro, ut.
+          A platform where you can learn and Earn cool money without going through much stress .
         </Text>
         <Box mt={4}>
         <Button

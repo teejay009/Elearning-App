@@ -17,6 +17,7 @@ const Arbitrum = () => {
   const [quizResult, setQuizResult] = useState({});
   const [paymentError, setPaymentError] = useState(null);
 
+  
   const [totalScore, setTotalScore] = useState(() => {
     return parseInt(localStorage.getItem("totalScoreArbitrum")) || 0;
   });
@@ -267,7 +268,7 @@ const Arbitrum = () => {
             marginRight="25rem"
             onClick={handleEarnPointsClick}
           >
-            Earn more points
+            Start Quiz
           </Button>
          
         </Flex>
@@ -276,15 +277,7 @@ const Arbitrum = () => {
       {showModal && (
         <div className="modal">
           <div className="modal-content">
-            <IconButton
-              icon={<CloseIcon />}
-              aria-label="Close modal"
-              onClick={handleCancelModal}
-              marginTop="1rem"
-              marginLeft="35rem"
-              zIndex="1"
-              backgroundColor="transparent"
-            />
+           
             <h2>{currentRead}</h2>
             {QuizData.map((questionData, questionIndex) => (
               <div key={questionIndex}>

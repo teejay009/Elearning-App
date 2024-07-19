@@ -16,19 +16,22 @@
   padding: 20px;
   color: black;
   border-radius: 8px;
-  max-width: 80%; /* Limit width of modal content */
-  max-height: 80%; /* Limit height of modal content */
+  width: 80%; /* Limit width of modal content */
+  height: 80%; /* Limit height of modal content */
   overflow-y: auto; /* Enable vertical scrolling */
   z-index: 1600; /* Ensure modal content is above modal background */
 }
 
 .modal-content p {
   margin-bottom: 10px;
+  font-size: 2.5rem;
 }
 
 .modal-content ul {
   padding-left: 20px;
   list-style: none;
+
+  font-size: 1.5rem;
 }
 
 .modal-content li {

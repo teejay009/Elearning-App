@@ -259,7 +259,7 @@ const Dlt = () => {
             marginRight="25rem"
             onClick={handleEarnPointsClick}
           >
-            Earn more points
+           Start Quiz
           </Button>
         </Flex>
       </Flex>
